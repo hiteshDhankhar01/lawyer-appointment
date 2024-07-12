@@ -1,36 +1,32 @@
-import React from 'react';
 import Link from 'next/link';
 
-const Header: React.FC = () => {
+const Header = () => {
   return (
-    <div className="bg-green-500 text-white py-4 p-2">
-      <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-bold">
+    <header className="bg-black text-white">
+      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+        <div className="text-xl font-bold">
           <Link href="/">
-            Lawyer Appointment App
+            <div>Logo</div>
           </Link>
-        </h1>
-        <nav>
-          <ul className="flex space-x-4">
-            <li>
-              <Link className="hover:underline" href="/" >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:underline" href="/login" >
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:underline" href="/register" >
-                Rigster
-              </Link>
-            </li>
-          </ul>
+        </div>
+        <nav className="flex space-x-6">
+          <Link href="/">
+            <div className="hover:underline">Home</div>
+          </Link>
+          <Link href="/about">
+            <div className="hover:underline">About</div>
+          </Link>
+          <Link href="/contact">
+            <div className="hover:underline">Contact</div>
+          </Link>
         </nav>
+        <div>
+          <Link href="/login">
+            <button className="bg-white text-black px-4 py-2 rounded hover:bg-gray-300">Login</button>
+          </Link>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 
