@@ -6,7 +6,7 @@ const Header = () => {
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         <div className="text-xl font-bold">
           <Link href="/">
-            <div>Logo</div>
+            <h1>LawyerMeet</h1>
           </Link>
         </div>
         <nav className="flex space-x-6">
@@ -22,7 +22,7 @@ const Header = () => {
         </nav>
         <div>
           <Link href="/login">
-            <button className="bg-white text-black px-4 py-2 rounded hover:bg-gray-300">Login</button>
+            <button className="px-4 py-2 rounded  bg- border border-white text-white  shadow-lg hover:bg-white hover:text-black transition duration-300 backdrop-blur-sm  ">Login</button>
           </Link>
         </div>
       </div>
