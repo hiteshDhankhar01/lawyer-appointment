@@ -2,8 +2,8 @@ import Link from 'next/link';
 
 const Header = () => {
   return (
-    <header className="bg-black text-white">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+    <header className="bg-gray-900 text-white border-b border-gray-800">
+      <div className="container mx-auto flex justify-between items-center p-4">
         <div className="text-xl font-bold">
           <Link href="/">
             <h1>LawyerMeet</h1>

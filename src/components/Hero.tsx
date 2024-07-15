@@ -12,7 +12,7 @@ const Hero = () => {
           </p>
           <a
             href="/book-appointment"
-            className="bg-transparent border border-white text-white px-8 py-4 rounded-full shadow-lg hover:bg-gray-200 hover:text-black transition duration-300 backdrop-blur-sm"
+            className="bg-transparent border border-white text-white px-8 py-4 rounded-full shadow-lg hover:bg-gray-200 hover:text-black transition duration-500 backdrop-blur-sm"
           >
             Book Appointment
           </a>
