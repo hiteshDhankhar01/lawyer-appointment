@@ -72,7 +72,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-.zxcv {
-  background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
-}
