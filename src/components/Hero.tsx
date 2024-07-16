@@ -25,7 +25,9 @@ const Hero = () => {
             className="bg-transparent border border-white text-white px-6 py-3 rounded-full shadow-2xl backdrop-blur-sm outline-none w-3/5"
           />
         </form> */}
+
       </div>
+     
     </div>
   );
 };
