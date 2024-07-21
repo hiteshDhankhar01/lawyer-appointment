@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
+import AnimateValue from './ui/AnimateValue';
 
 const AboutUs: React.FC = () => {
     return (
-        <section className="bg-gray-900 text-white  ">
+        <section className="abg-gray-900 text-white" id='about'>
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ">
                     <div className="flex items-center flex-col justify-between py-8 text-center md:text-left">
@@ -13,17 +14,20 @@ const AboutUs: React.FC = () => {
 
                         <div className="flex flex-col items-center md:flex-row md:justify-start md:gap-4  p-4">
                             <div className="text-center md:text-left">
-                                <span className="text-5xl font-bold">05</span>
+                                <span className="text-5xl font-bold">
+                                <AnimateValue start={1} end={15} duration={1000} />
+                                    </span>
+                                {/* <span className="text-5xl font-bold">05</span> */}
                                 <span className="block">Years of Experience</span>
                             </div>
 
                             <div className="text-center md:text-left">
-                                <span className="text-5xl font-bold">29+</span>
+                                <span className="text-5xl font-bold flex items-center justify-center"><AnimateValue start={1} end={66} duration={1000} />+</span>
                                 <span className="block">Projects completed</span>
                             </div>
 
                             <div className="text-center md:text-left">
-                                <span className="text-5xl font-bold">07</span>
+                                <span className="text-5xl font-bold"><AnimateValue start={1} end={11} duration={1000} /></span>
                                 <span className="block">Recognitions</span>
                             </div>
                         </div>
@@ -35,12 +39,12 @@ const AboutUs: React.FC = () => {
                             alt="About us"
                             height={500}
                             width={500}
-                            className="rounded-lg shadow-lg"
+                            className=""
                         />
                     </div>
                 </div>
             </div>
-            <div className='border border-gray-800 mx-8 mt-10'></div>
+            <div className='border border-gray-800 mx-8 mt-10 shadow-lg'></div>
         </section>
     );
 };

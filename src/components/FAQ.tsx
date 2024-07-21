@@ -20,7 +20,7 @@ const FAQ: React.FC = () => {
                 <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
                 <div className="space-y-4">
                     {faqs.map((faq, index) => (
-                        <div key={index} className={`blorder bg-gray-800 p-4 rounded-lg shadow-lg ui-accordion-header ${activeIndex === index ? 'ui-active' : ''}`}
+                        <div key={index} className={` bg-gray-800 p-4 rounded-lg custom-shadow ashadow-lg ui-accordion-header ${activeIndex === index ? 'ui-active' : ''}`}
                             onClick={() => toggleAccordion(index)}>
                             <h3 className="text-lg">{faq.question}</h3>
 

@@ -16,7 +16,7 @@ const Team = () => {
     return (
         <section className=" text-white px-4 py-8">
             <div className="container mx-auto">
-                <h2 className="text-3xl font-bold mb-4 text-center">Meet Our Team</h2>
+                <h2 className="text-3xl font-bold mb-4 text-center ">Meet Our Team</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {teamMembers.map((member, index) => (
                         <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg text-center  hover:scale-105 border border-gray-900 transition duration-300 ">

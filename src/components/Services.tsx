@@ -44,7 +44,7 @@ const Review: React.FC<Props> = ({ services }) => {
             >
                 {services.map((service, index) => (
                     <SwiperSlide key={index}>
-                        <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <div key={index} className="bg-gray-800 p-6 rounded-lg  custom-shadow ashadow-lg">
                             <h3 className="text-lg mb-2">{service.title}</h3>
                             <p className='text-gray-400'>{service.description}</p>
                         </div>

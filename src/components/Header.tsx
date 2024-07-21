@@ -13,7 +13,7 @@ const Header = () => {
           <Link href="/">
             <div className="hover:underline">Home</div>
           </Link>
-          <Link href="/about">
+          <Link href="/#about">
             <div className="hover:underline">About</div>
           </Link>
           <Link href="/contact">
@@ -22,7 +22,7 @@ const Header = () => {
         </nav>
         <div>
           <Link href="/login">
-            <button className="px-4 py-2 rounded  bg- border border-white text-white  shadow-lg hover:bg-white hover:text-black transition duration-300 backdrop-blur-sm  ">Login</button>
+            <button className="px-4 py-2 rounded  bg- border border-white text-white  shadow-lg hover:bg-white hover:text-black transition duration-300  ">Login</button>
           </Link>
         </div>
       </div>
