@@ -10,6 +10,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
+    scroll-behavior: smooth;
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
@@ -77,5 +78,25 @@
 .custom-shadow{
   box-shadow: rgba(0, 0, 0, 0.35) 5px 5px 15px;
   border: .5px solid rgba(0, 0, 0, 0.35);
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 3s ease-in-out forwards;
 }
 

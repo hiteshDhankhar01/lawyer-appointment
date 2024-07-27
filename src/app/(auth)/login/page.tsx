@@ -2,16 +2,13 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import dbConnect from '@/lib/dbConnect';
 
 const Login: React.FC = () => {
 
-    useEffect(() => {
-        dbConnect()
-    }, [])
+
     return (
-        <div className="relative h-screen text-white bg-cover bg-center" style={{ backgroundImage: 'url(/bg.jpg)' }}>
-            <div className="absolute inset-0 bg-black opacity-60"></div>
+        // <div className="relative h-screen text-white bg-cover bg-center" style={{ backgroundImage: 'url(/bg.jpg)' }}>
+        //     <div className="absolute inset-0 bg-black opacity-60"></div>
             <div className="relative flex items-center justify-center h-full">
                 <div className="flex items-center justify-center backdrop-blur-lg  rounded-xl shadow-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
                     <div className="p-10 rounded-lg">
@@ -75,7 +72,6 @@ const Login: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 
