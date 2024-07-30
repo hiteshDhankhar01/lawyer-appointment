@@ -39,7 +39,7 @@ const AboutUs: React.FC = () => {
                             alt="About us"
                             height={500}
                             width={500}
-                            className=""
+                            className="h-auto w-auto"
                         />
                     </div>
                 </div>

@@ -4,35 +4,31 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { setUser } from '@/lib/store';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
-    const dispatch = useDispatch();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ action: 'login', email, password }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
             toast.success(data.message);
-            console.log(data)
-            const user = JSON.stringify(data.user)
-            // console.log(data.user)
-            // console.log(a)
-            dispatch(setUser(data.user));
+            console.log(data);
+            const user = JSON.stringify(data.user);
+            const token = JSON.stringify(data.token);
             localStorage.setItem('user', user);
+            localStorage.setItem('token', token);
             router.push('/');
         } else {
             toast.error(data.message);
@@ -47,7 +43,6 @@ const Login: React.FC = () => {
                         <h2 className="text-xl font-bold tracking-wider text-neon">LawyerMeet</h2>
                     </div>
                     <h2 className="text-center mb-4 text-lg">Sign Into Your Account</h2>
-
                     <form onSubmit={handleSubmit}>
                         <div className="mb-6">
                             <input
@@ -98,10 +93,9 @@ const Login: React.FC = () => {
                             Login
                         </button>
                     </form>
-                    {/* Register Link */}
                     <p className="text-center mt-6 text-gray-300">
                         Don't have an account?{' '}
-                        <Link href="/register" className="text-gray-100 hover:text-white transition duration-300">
+                        <Link href="/register" className="text-blue-500 border-b border-blue-500 transition duration-300">
                             Register here
                         </Link>
                     </p>

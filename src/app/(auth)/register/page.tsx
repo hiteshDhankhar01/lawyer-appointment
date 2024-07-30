@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { setUser } from '@/lib/store';
 
 const Register: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -15,7 +13,6 @@ const Register: React.FC = () => {
         gender: ''
     });
     const router = useRouter();
-    const dispatch = useDispatch();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,12 +22,12 @@ const Register: React.FC = () => {
         e.preventDefault();
         console.log('Submitting form:', formData);
 
-        const response = await fetch('/api/register', {
+        const response = await fetch('/api/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify({ action: 'register', formData}),
         });
 
         console.log('Response status:', response.status);
@@ -38,10 +35,12 @@ const Register: React.FC = () => {
         const data = await response.json();
 
         if (response.ok) {
-            const user = JSON.stringify(data.user)
-            dispatch(setUser(data.user));
+            toast.success(data.message);
+            console.log(data);
+            const user = JSON.stringify(data.user);
+            const token = JSON.stringify(data.token);
             localStorage.setItem('user', user);
-            toast.success( data.message);
+            localStorage.setItem('token', token);
             router.push('/');
         } else {
             console.error('Error message:', data.error);
@@ -50,8 +49,6 @@ const Register: React.FC = () => {
     };
 
     return (
-        // <div className="relative h-screen text-white bg-cover bg-center" style={{ backgroundImage: 'url(/bg.jpg)' }}>
-        //     <div className="absolute inset-0 bg-black opacity-60"></div>
         <div className="relative flex items-center justify-center h-full">
             <div className="flex items-center justify-center backdrop-blur-lg rounded-xl shadow-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
                 <div className="p-10 rounded-lg">
@@ -120,7 +117,7 @@ const Register: React.FC = () => {
                     </form>
                     <p className="text-center mt-6 text-gray-300">
                         Already have an account?{' '}
-                        <Link href="/login" className="text-gray-100 hover:text-white transition duration-300">
+                        <Link href="/login" className="text-blue-500 border-b border-blue-500 transition duration-300">
                             Login here
                         </Link>
                     </p>
