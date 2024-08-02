@@ -4,14 +4,17 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { useAuth } from "@/context/authContext"
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const { dispatch } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        dispatch({ type: "LOGIN_START" });
         const response = await fetch('/api/auth', {
             method: 'POST',
             headers: {
@@ -26,9 +29,10 @@ const Login: React.FC = () => {
             toast.success(data.message);
             console.log(data);
             const user = JSON.stringify(data.user);
-            const token = JSON.stringify(data.token);
+            const token = data.token;
             localStorage.setItem('user', user);
             localStorage.setItem('token', token);
+            dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token } });
             router.push('/');
         } else {
             toast.error(data.message);

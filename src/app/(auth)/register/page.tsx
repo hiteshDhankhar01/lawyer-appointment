@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { useAuth } from "@/context/authContext"
 
 const Register: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ const Register: React.FC = () => {
         gender: ''
     });
     const router = useRouter();
+    const { state, dispatch } = useAuth();
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,31 +23,44 @@ const Register: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submitting form:', formData);
+        dispatch({ type: "LOGIN_START" });
 
-        const response = await fetch('/api/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ action: 'register', formData}),
-        });
+        try {
+            const response = await fetch('/api/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action: 'register', ...formData }),
+            });
 
-        console.log('Response status:', response.status);
-        // toast.success("Register succes");
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            toast.success(data.message);
-            console.log(data);
-            const user = JSON.stringify(data.user);
-            const token = JSON.stringify(data.token);
-            localStorage.setItem('user', user);
-            localStorage.setItem('token', token);
-            router.push('/');
-        } else {
-            console.error('Error message:', data.error);
-            toast.error( data.error);
+            if (response.ok) {
+                // toast.success(data.message);
+                // const user = JSON.stringify(data.user);
+                // const token = JSON.stringify(data.token);
+                // localStorage.setItem('user', user);
+                // localStorage.setItem('token', token);
+                // router.push('/');
+
+                toast.success(data.message);
+                console.log(data);
+                const user = JSON.stringify(data.newUser);
+                const token = data.token;
+                localStorage.setItem('user', user);
+                localStorage.setItem('token', token);
+                dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token } });
+                router.push('/');
+
+
+            } else {
+                console.error('Error message:', data.error);
+                toast.error(data.error || 'An error occurred');
+            }
+        } catch (error) {
+            console.error('Server error:', error);
+            toast.error('Server error. Please try again later.');
         }
     };
 

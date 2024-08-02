@@ -60,7 +60,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             return NextResponse.json({ message: 'User registered successfully!', newUser, token }, { status: 201 });
         } catch (error) {
             console.error('Server error:', error);
-            return NextResponse.json({ error: 'Server error. Please try again later.' }, { status: 500 });
+            return NextResponse.json({ error: `Server error..${error}` }, { status: 500 });
         }
     } else {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
