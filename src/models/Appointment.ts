@@ -1,32 +1,117 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-interface IUser extends Document {
+export interface IAppointment extends Document {
+    userId: mongoose.Schema.Types.ObjectId;
     name: string;
     email: string;
-    password: string;
-    gender: string;
+    phoneNo: number;
+    date: string;
+    service: string;
+    status: string;
+    message?: string;
 }
 
-const UserSchema: Schema<IUser> = new Schema({
-    name: {
-        type: String,
-        required: true,
+const AppointmentSchema: Schema<IAppointment> = new Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+        },
+        phoneNo: {
+            type: Number,
+            required: true,
+        },
+        date: {
+            type: String,
+            required: true,
+        },
+        service: {
+            type: String,
+            required: true,
+        },
+        status: {
+            type: String,
+            enum: ["pending", "approved", "rejected"],
+            default: "pending",
+        },
+        message: {
+            type: String,
+        },
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    gender: {
-        type: String,
-        required: true,
-    },
-}, { timestamps: true });
+    { timestamps: true }
+);
 
-const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+const Appointment: Model<IAppointment> =
+    mongoose.models.Appointment ||
+    mongoose.model<IAppointment>("Appointment", AppointmentSchema);
 
-export default User;
+export default Appointment;
+
+
+// // models/Appointment.ts
+// import mongoose, { Document, Model, Schema } from "mongoose";
+
+// export interface IAppointment extends Document {
+//     userId: mongoose.Schema.Types.ObjectId;
+//     name: string;
+//     email: string;
+//     phoneNo: number;
+//     date: string;
+//     service: string;
+//     status: string;
+//     message?: string;
+// }
+
+// const AppointmentSchema: Schema<IAppointment> = new Schema(
+//     {
+//         userId: {
+//             type: mongoose.Schema.Types.ObjectId,
+//             ref: "User",
+//             required: true
+//         },
+//         name: {
+//             type: String,
+//             required: true,
+//         },
+//         email: {
+//             type: String,
+//             required: true,
+//         },
+//         phoneNo: {
+//             type: Number,
+//             required: true,
+//         },
+//         date: {
+//             type: String,
+//             required: true,
+//         },
+//         service: {
+//             type: String,
+//             required: true,
+//         },
+//         status: {
+//             type: String,
+//             enum: ["pending", "approved", "rejected"],
+//             default: "pending",
+//         },
+//         message: {
+//             type: String,
+//         },
+//     },
+//     { timestamps: true }
+// );
+
+// const Appointment: Model<IAppointment> =
+//     mongoose.models.Appointment ||
+//     mongoose.model<IAppointment>("Appointment", AppointmentSchema);
+
+// export default Appointment;

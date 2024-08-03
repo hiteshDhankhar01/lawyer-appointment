@@ -15,16 +15,12 @@ const Register: React.FC = () => {
     });
     const router = useRouter();
     const { state, dispatch } = useAuth();
-
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         dispatch({ type: "LOGIN_START" });
-
         try {
             const response = await fetch('/api/auth', {
                 method: 'POST',
@@ -33,17 +29,8 @@ const Register: React.FC = () => {
                 },
                 body: JSON.stringify({ action: 'register', ...formData }),
             });
-
             const data = await response.json();
-
             if (response.ok) {
-                // toast.success(data.message);
-                // const user = JSON.stringify(data.user);
-                // const token = JSON.stringify(data.token);
-                // localStorage.setItem('user', user);
-                // localStorage.setItem('token', token);
-                // router.push('/');
-
                 toast.success(data.message);
                 console.log(data);
                 const user = JSON.stringify(data.newUser);
@@ -52,8 +39,6 @@ const Register: React.FC = () => {
                 localStorage.setItem('token', token);
                 dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token } });
                 router.push('/');
-
-
             } else {
                 console.error('Error message:', data.error);
                 toast.error(data.error || 'An error occurred');
@@ -63,7 +48,6 @@ const Register: React.FC = () => {
             toast.error('Server error. Please try again later.');
         }
     };
-
     return (
         <div className="relative flex items-center justify-center h-full">
             <div className="flex items-center justify-center backdrop-blur-lg rounded-xl shadow-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>

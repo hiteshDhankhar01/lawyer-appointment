@@ -1,7 +1,25 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const BookAppointment: React.FC = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phoneNo: '',
+        Date: '',
+        Service: '',
+        Message: ''
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+    }
+    // const router = useRouter();
+
+    const handleSubmit = () => { }
+
     return (
         <div className="relative min-h-screen text-white bg-cover bg-center overflow-scroll" style={{ backgroundImage: 'url(/bg.jpg)' }}>
             <div className="absolute inset-0 bg-black opacity-70"></div>
@@ -21,6 +39,8 @@ const BookAppointment: React.FC = () => {
                                         id="name"
                                         name="name"
                                         placeholder="Enter Your Name"
+                                        value={formData.name}
+                                        onChange={handleChange}
                                         required
                                     />
                                 </div>
@@ -31,6 +51,8 @@ const BookAppointment: React.FC = () => {
                                         id="email"
                                         name="email"
                                         placeholder="Enter Your Email"
+                                        value={formData.email}
+                                        onChange={handleChange}
                                         required
                                     />
                                 </div>
@@ -41,6 +63,8 @@ const BookAppointment: React.FC = () => {
                                         id="phone"
                                         name="phone"
                                         placeholder="Enter Your Phone Number"
+                                        value={formData.phoneNo}
+                                        onChange={handleChange}
                                         required
                                     />
                                 </div>
@@ -50,6 +74,8 @@ const BookAppointment: React.FC = () => {
                                         className="form-control w-full p-3 border border-gray-500 rounded-full bg-transparent focus:outline-none focus:border-gray-300 transition duration-300"
                                         id="appointmentDate"
                                         name="appointmentDate"
+                                        value={formData.Date}
+                                        onChange={handleChange}
                                         required
                                     />
                                 </div>
@@ -58,6 +84,8 @@ const BookAppointment: React.FC = () => {
                                         className="form-control w-full p-3 border border-gray-500 rounded-full bg-transparent focus:outline-none focus:border-gray-300 transition duration-300"
                                         id="service"
                                         name="service"
+                                        value={formData.Service}
+                                        onChange={handleChange}
                                         required
                                     >
                                         <option value="">Select Service</option>
@@ -75,6 +103,8 @@ const BookAppointment: React.FC = () => {
                                     id="message"
                                     name="message"
                                     placeholder="Enter Your Message"
+                                    value={formData.Message}
+                                    onChange={handleChange}
                                     rows={4}
                                 ></textarea>
                             </div>
@@ -87,11 +117,11 @@ const BookAppointment: React.FC = () => {
                         </form>
                         <p className="text-center mt-6 text-gray-300">
                             Go back to{' '}
-                            
+
                             <Link href="/" className="text-blue-500 border-b border-blue-500 ">
                                 Home
                             </Link>
-                            
+
                         </p>
                     </div>
                 </div>
