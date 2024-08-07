@@ -4,8 +4,6 @@ import Appointment from '@/models/Appointment';
 import mongoose from 'mongoose';
 import User from '@/models/User';
 
-
-
 export const POST = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
     try {
@@ -49,45 +47,6 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
     }
 };
-// export const POST = async (req: NextRequest) => {
-//     await ConnectToDB();
-//     try {
-//         const body = await req.json();
-//         const { user, name, email, phoneNo, date, service, status, message } = body;
-
-//         const user = await User.findById("60f8f9a2b3b8c243d8e9d5d5");
-
-//         if (!user) {
-//             return NextResponse.json({ success: false, message: 'User not found' }, { status: 400 });
-//             // console.log("User not found");
-//         }
-
-//         if (!mongoose.Types.ObjectId.isValid(user)) {
-//             return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
-//         }
-
-
-
-//         if (!user || !name || !email || !phoneNo || !date || !service) {
-//             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
-//         }
-
-//         const newAppointment = new Appointment({
-//             user,
-//             name,
-//             email,
-//             phoneNo,
-//             date,
-//             service,
-//             status,
-//             message,
-//         });
-//         const appointment = await newAppointment.save();
-//         return NextResponse.json({ success: true, data: appointment }, { status: 201 });
-//     } catch (err) {
-//         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
-//     }
-// };
 
 export const GET = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
@@ -107,49 +66,3 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
         return NextResponse.json({ success: false, message: err }, { status: 500 });
     }
 };
-
-// export const POST = async (
-//     req: NextRequest,
-
-// ) => {
-//     await ConnectToDB();
-//     try {
-
-//         const body = await req.json();
-//         const { user, name, email, phoneNo, date, service, status, message } = body;
-
-//         if (!user || !name || !email || !phoneNo || !date || !service) {
-//             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
-//         }
-
-//         const newAppointment = new Appointment({
-//             user,
-//             name,
-//             email,
-//             phoneNo,
-//             date,
-//             service,
-//             status,
-//             message,
-//         });
-//         const appointment = await newAppointment.save();
-//         return NextResponse.json({ success: true, data: appointment }, { status: 201 });
-//     } catch (err) {
-//         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
-//     }
-// };
-// export const GET = async (
-//     req: NextRequest,
-// ) => {
-//     await ConnectToDB();
-//     try {
-//         const appointment = await Appointment.find({ user: userId });
-//         if (!appointment) {
-//             return NextResponse.json({ success: false, message: 'No appointments found for this user' }, { status: 404 });
-//         }
-//         return NextResponse.json({ success: true, data: appointment }, { status: 201 });
-
-//     } catch (err) {
-//         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
-//     }
-// };
