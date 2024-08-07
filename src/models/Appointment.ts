@@ -40,7 +40,7 @@ const AppointmentSchema: Schema<IAppointment> = new Schema(
         },
         status: {
             type: String,
-            enum: ["pending", "approved", "rejected"],
+            enum: ["pending", "confirmed", "completed", "canceled"],
             default: "pending",
         },
         message: {

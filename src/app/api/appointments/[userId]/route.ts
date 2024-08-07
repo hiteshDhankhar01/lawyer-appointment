@@ -66,3 +66,34 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
         return NextResponse.json({ success: false, message: err }, { status: 500 });
     }
 };
+
+
+export const PUT = async(req: NextRequest,  { params }: { params: { userId: string } }) => {
+    await ConnectToDB();
+    const { userId } = params;
+    const appointmentId = userId
+
+    try {
+        const body = await req.json();
+        const { name, email, phoneNo, date, service, status, message } = body;
+
+        if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
+            return NextResponse.json({ success: false, message: 'Invalid appointment ID' }, { status: 400 });
+        }
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(
+            appointmentId,
+            { name, email, phoneNo, date, service, status, message },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedAppointment) {
+            return NextResponse.json({ success: false, message: 'Appointment not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, data: updatedAppointment }, { status: 200 });
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
+    }
+};
