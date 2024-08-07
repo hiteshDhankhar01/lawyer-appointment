@@ -69,28 +69,3 @@ export const useAuth = () => {
     }
     return context;
 };
-
-
-// "use client"
-// import { createContext, useContext, useState, ReactNode } from "react";
-
-// interface AppContextType {
-//     name: string;
-//     setName: (name: string) => void;
-// }
-
-// const AppContext = createContext<AppContextType | undefined>(undefined);
-
-// export function AppWrapper({ children }: { children: ReactNode }) {
-//     const [name, setName] = useState("aman");
-//     return (
-//         <AppContext.Provider value={{ name, setName }}>
-//             {children}
-//         </AppContext.Provider>
-//     );
-// }
-
-// export function useAppContext() {
-//     const context = useContext(AppContext);
-//     return context;
-// }
