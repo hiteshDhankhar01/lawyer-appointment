@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AppointmentCard from '@/components/AppointmentCard';
+import AppointmentCard from '@/components/AppointmentCard2';
 import { IAppointment } from '@/models/Appointment';
 
 const AppointmentsPage: React.FC = () => {

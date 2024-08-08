@@ -1,7 +1,5 @@
 import React from 'react';
 import Hero from '@/components/Hero';
-import Review from '@/components/Review';
-import reviewsData from '@/data/reviews.json';
 import servicesData from '@/data/services.json';
 import AboutUs from '@/components/AboutUs';
 import Services from '@/components/Services';
@@ -17,7 +15,6 @@ const Home = () => {
             <AboutUs />
             <Services services={servicesData} />
             <Team />
-            <Review reviews={reviewsData} />
             <FAQ />
             <Blog />
         </div>

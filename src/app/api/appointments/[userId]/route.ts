@@ -4,37 +4,48 @@ import Appointment from '@/models/Appointment';
 import mongoose from 'mongoose';
 import User from '@/models/User';
 
+
 export const POST = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
     try {
-        // Parse the request body
+
         const body = await req.json();
         const { name, email, phoneNo, date, service, status, message } = body;
         const { userId } = params;
 
-        // Validate the user ID
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
         }
 
-        // Check if the user exists
         const user = await User.findById(userId);
         if (!user) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
         }
 
-        // Validate other required fields
         if (!name || !email || !phoneNo || !date || !service) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
-        // Create and save the new appointment
+        const appointmentDate = new Date(date);
+        const currentDate = new Date();
+        if (appointmentDate < currentDate) {
+            return NextResponse.json({ success: false, message: 'Appointment date cannot be in the past' }, { status: 400 });
+        }
+
+        const appointments = await Appointment.find({ userId: userId });
+        if (appointments.length > 0) {
+            const futureAppointments = appointments.filter(app => new Date(app.date) > new Date());
+            if (futureAppointments.length > 0) {
+                return NextResponse.json({ success: false, message: 'You already have an appointment booked for a future date' }, { status: 400 });
+            }
+        }
+
         const newAppointment = new Appointment({
             userId,
             name,
             email,
             phoneNo,
-            date,
+            date: appointmentDate,
             service,
             status,
             message,
@@ -43,32 +54,74 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
         const appointment = await newAppointment.save();
         return NextResponse.json({ success: true, data: appointment }, { status: 201 });
     } catch (err) {
-        console.error(err); // Log the error for debugging
+        console.error(err);
         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
     }
 };
 
+
+// export const GET = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+//     await ConnectToDB();
+//     try {
+//         const { userId } = params;
+
+//         // Validate the user ID
+//         if (!mongoose.Types.ObjectId.isValid(userId)) {
+//             return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
+//         }
+
+//         // Find all future appointments for the user and sort by date ascending
+//         const futureAppointments = await Appointment.find({ userId: userId, date: { $gt: new Date() } })
+//             .sort({ date: 1 })
+//             .limit(1); // Only get the next upcoming appointment
+
+//         if (futureAppointments.length === 0) {
+//             return NextResponse.json({ success: false, message: 'No upcoming appointments found' }, { status: 404 });
+//         }
+
+//         return NextResponse.json({ success: true, data: futureAppointments[0] }, { status: 200 });
+//     } catch (err) {
+//         console.error(err);
+//         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
+//     }
+// };
+
+
+
 export const GET = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
-    const { userId } = params;
-
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-        return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
-    }
-
     try {
-        const appointments = await Appointment.find({ userId: userId });
-        if (appointments.length === 0) {
-            return NextResponse.json({ success: false, message: 'No appointments found for this user' }, { status: 404 });
+        const { userId } = params;
+
+        // Validate the user ID
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
         }
-        return NextResponse.json({ success: true, data: appointments }, { status: 200 });
+
+        // Find the next upcoming appointment for the user
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 1);
+  
+        console.log(currentDate.toString());
+
+        const upcomingAppointment = await Appointment.findOne({
+            userId: userId,
+            date: { $gt: currentDate }
+        })
+            .sort({ date: 1 }); // Sort by date to get the nearest upcoming appointment
+
+        if (!upcomingAppointment) {
+            return NextResponse.json({ success: false, message: 'No upcoming appointments found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, data: upcomingAppointment }, { status: 200 });
     } catch (err) {
-        return NextResponse.json({ success: false, message: err }, { status: 500 });
+        console.error(err);
+        return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
     }
 };
 
-
-export const PUT = async(req: NextRequest,  { params }: { params: { userId: string } }) => {
+export const PUT = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
     const { userId } = params;
     const appointmentId = userId

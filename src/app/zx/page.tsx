@@ -1,4 +1,4 @@
-import AppointmentCard from '@/components/AppointmentCard';
+import AppointmentCard from '@/components/AppointmentCard2';
 import React from 'react';
 
 const page34 = () => {

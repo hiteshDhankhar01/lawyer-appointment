@@ -5,7 +5,7 @@ export interface IAppointment extends Document {
     name: string;
     email: string;
     phoneNo: number;
-    date: string;
+    date: Date;
     service: string;
     status: string;
     message?: string;
@@ -31,7 +31,7 @@ const AppointmentSchema: Schema<IAppointment> = new Schema(
             required: true,
         },
         date: {
-            type: String,
+            type: Date,
             required: true,
         },
         service: {
