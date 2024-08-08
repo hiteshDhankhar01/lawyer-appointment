@@ -1,10 +1,16 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/authContext';
-import AppointmentCard2 from '@/components/AppointmentCard2';
 import { IAppointment } from '@/models';
-import { Link } from 'lucide-react';
+import { toast } from 'react-toastify';
+import Link from 'next/link';
+
+// Utility function to format ISO date to YYYY-MM-DD
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+};
 
 const AppointmentPage = () => {
     const { state } = useAuth();
@@ -34,15 +40,22 @@ const AppointmentPage = () => {
                 return;
             }
 
-            setAppointment(data.data);
+            // Convert date to YYYY-MM-DD format
+            const formattedAppointment = {
+                ...data.data,
+                date: formatDate(data.data.date),
+            };
+
+            setAppointment(formattedAppointment);
+            console.log(formattedAppointment);
         } catch (error) {
             console.error("Failed to fetch appointment:", error);
         }
     };
 
-
-
     const handleUpdateAppointment = async () => {
+        if (!appointment) return;
+
         try {
             const response = await fetch(`/api/appointments/${appointment._id}`, {
                 method: 'PUT',
@@ -56,16 +69,15 @@ const AppointmentPage = () => {
 
             if (!response.ok) {
                 console.error("Error updating appointment:", data.message || "Unknown error");
-                alert("Failed to update appointment.");
-                return;
+                throw new Error("Failed to update appointment.");
             }
 
             // Update the local state with the updated appointment
             setAppointment(data.data);
-            alert("Appointment updated successfully!");
+            toast.success("Appointment updated successfully!");
         } catch (error) {
             console.error("Failed to update appointment:", error);
-            alert("An error occurred while updating the appointment.");
+            toast.error("An error occurred while updating the appointment.");
         }
     };
 
@@ -74,82 +86,375 @@ const AppointmentPage = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    return (
-        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 min-h-screen">
-            <h1 className="text-4xl font-extrabold text-white mb-6">Your Appointment</h1>
-            {appointment ? (
-                <div className="flex flex-col items-center">
-                    <AppointmentCard2 appointment={appointment} />
-                </div>
-            ) : (
-                <div className="text-white text-lg">No appointment found</div>
-            )}
+    const handleCancel = async () => {
+        if (!appointment) return;
+        try {
+            const response = await fetch(`/api/appointments/${appointment._id}`, {
+                method: 'DELETE',
+            });
 
-            {appointment && (
-                <div className="mt-8 bg-gray-800 p-8 rounded-lg shadow-lg">
-                    <h2 className="text-3xl font-semibold text-white mb-4">Update Appointment</h2>
-                    <form onSubmit={(e) => { e.preventDefault(); handleUpdateAppointment(); }}>
-                        {['name', 'email', 'phoneNo', 'date', 'service', 'message'].map(field => (
-                            <div className="mb-6" key={field}>
-                                <label className="block text-white text-lg mb-2 capitalize">{field}</label>
-                                {field === 'message' ? (
-                                    <textarea
-                                        name={field}
-                                        value={formData[field] || appointment[field]}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                ) : (
-                                    <input
-                                        type={field === 'date' ? 'date' : 'text'}
-                                        name={field}
-                                        value={formData[field] || appointment[field]}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                )}
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Error canceling appointment:", data.message || "Unknown error");
+                toast.error(data.message || "Failed to cancel appointment.");
+                return;
+            }
+
+            setAppointment(null);
+            toast.success("Appointment canceled successfully!");
+        } catch (error) {
+            console.error("Failed to cancel appointment:", error);
+            toast.error("An error occurred while canceling the appointment.");
+        }
+    };
+
+    return (
+        <div className='bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-8 min-h-screen'>
+            <div className='max-w-4xl mx-auto flex relative bg-gray-900 rounded-lg'>
+                <div className='w-1/2 p-4 pr-12'>
+                    <div className='flex items-center mb-2'>
+                        <Link href="/" className='text-blue-400 hover:text-blue-300 transition duration-300'>
+                            Home
+                        </Link>
+                        <span className='text-gray-400 mx-2'>/</span>
+                        <span className='text-gray-300'>Appointment</span>
+                    </div>
+                    <h2 className='text-4xl font-semibold text-white mb-4'>
+                        DETAILS OF <span className='font-bold'>APPOINTMENT</span>
+                    </h2>
+                    {appointment ? (
+                        <>
+                            <p className='text-gray-400 mb-8'>
+                                Here are the details of your appointment. Please take a moment to verify the information and make sure everything is accurate. If there are any adjustments needed or questions you have, don't hesitate to reach out. We are here to assist you at every step.
+                            </p>
+                            <div className="text-sm font-medium px-3 py-1 rounded-full text-white mb-6">
+                                <span>Status:</span>
+                                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment.status === 'completed' ? 'bg-blue-600' :
+                                    appointment.status === 'confirmed' ? 'bg-green-600' :
+                                        appointment.status === 'canceled' ? 'bg-red-600' :
+                                            'bg-yellow-600'
+                                    }`}>
+                                    {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                                </span>
                             </div>
-                        ))}
-                        <button type="submit" className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Update Appointment
-                        </button>
-                    </form>
+                        </>
+                    ) : (
+                        <p className='text-gray-400 mb-8'>Loading appointment details...</p>
+                    )}
                 </div>
-            )}
+
+                {appointment && (
+                    <div className='max-w-[30rem] bg-gray-800 rounded-lg shadow-xl p-6 absolute right-0 m-4'>
+                        <h3 className="text-2xl font-semibold text-white mb-4 text-center">
+                            Appointment Update
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name || appointment.name}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email || appointment.email}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Phone No.</label>
+                                <input
+                                    type="text"
+                                    name="phoneNo"
+                                    value={formData.phoneNo || appointment.phoneNo}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Date</label>
+                                <input
+                                    type="date"
+                                    name="date"
+                                    value={formData.date || formatDate(appointment.date)}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+                                />
+                            </div>
+                            <div className="col-span-2">
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Service</label>
+                                <input
+                                    type="text"
+                                    name="service"
+                                    value={formData.service || appointment.service}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+                                />
+                            </div>
+                            <div className="col-span-2">
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                                <textarea
+                                    name="message"
+                                    value={formData.message || appointment.message}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+                                />
+                            </div>
+                        </div>
+                        <div className="mt-6 flex justify-between">
+                            <button
+                                onClick={handleCancel}
+                                className="px-4 py-2 rounded border border-red-500 text-red-500 shadow-lg hover:bg-red-500 hover:text-white transition duration-300">
+                                Cancel Booking
+                            </button>
+                            <button
+                                onClick={handleUpdateAppointment}
+                                className="px-4 py-2 rounded border border-blue-500 text-blue-500 shadow-lg hover:bg-blue-500 hover:text-white transition duration-300">
+                                Update Appointment
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
-};
+}
 
 export default AppointmentPage;
 
-export const AppointmentStatus = () => {
-    return (
-        <div className="relative bg-gradient-to-r from-transparent px-10 via-gray-950 to-transparent  text-white mt-10 p-4  shadow-lg">
-            <p className="mb-2 text-lg">
-                <span className="font-semibold">
 
-                    You have scheduled an appointment for
-                    {/* pending */}
 
-                    {/* You have secured an appointment for */}
-                    {/* approved */}
 
-                    {/* Unfortunately, your appointment has been canceled for */}
-                    {/* rejected  */}
 
-                </span>
-                 Monday, 5 October 2025
-            </p>
-            <p className="mb-2 text-lg">
-                <span className="font-semibold">Status:</span>
-                <span className="inline-block ml-2 px-3 py-1 rounded-full text-sm bg-yellow-500 animate-pulse">
-                    pending
-                </span>
-            </p>
-            <Link href='/appointment' className="inline-block mt-4 px-4 py-2  text-white rounded-full shadow-md hover:bg-gray-200 bg-transparent border-[.1px] border-white k hover:text-black transition duration-500 backdrop-blur-sm">
-                More Details
-            </Link>
 
-        </div>
-    )
-}
+
+// "use client";
+
+// import React, { useCallback, useEffect, useState } from 'react';
+// import { useAuth } from '@/context/authContext';
+// import { IAppointment } from '@/models';
+// import { toast } from 'react-toastify';
+// import { error } from 'console';
+// import Link from 'next/link';
+
+// const AppointmentPage = () => {
+//     const { state } = useAuth();
+//     const [userId, setUserId] = useState<string>('');
+//     const [appointment, setAppointment] = useState<IAppointment | null>(null);
+//     const [formData, setFormData] = useState<Partial<IAppointment>>({});
+
+//     useEffect(() => {
+//         if (state.user) {
+//             setUserId(state.user._id);
+//         }
+//     }, [state.user]);
+
+//     useEffect(() => {
+//         if (userId) {
+//             fetchAppointment();
+//         }
+//     }, [userId]);
+
+//     const fetchAppointment = async () => {
+//         try {
+//             const response = await fetch(`/api/appointments/${userId}`);
+//             const data = await response.json();
+
+//             if (!response.ok) {
+//                 console.error("Error fetching appointment:", data.message || "Unknown error");
+//                 return;
+//             }
+
+//             setAppointment(data.data);
+//             console.log(data.data);
+//         } catch (error) {
+//             console.error("Failed to fetch appointment:", error);
+//         }
+//     };
+
+//     const handleUpdateAppointment = async () => {
+//         if (!appointment) return;
+
+//         try {
+//             const response = await fetch(`/api/appointments/${appointment._id}`, {
+//                 method: 'PUT',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify(formData),
+//             });
+
+//             const data = await response.json();
+
+//             if (!response.ok) {
+//                 console.error("Error updating appointment:", data.message || "Unknown error");
+//                 throw new Error("Failed to update appointment.");
+//             }
+
+//             // Update the local state with the updated appointment
+//             setAppointment(data.data);
+//             toast.success("Appointment updated successfully!");
+//         } catch (error) {
+//             console.error("Failed to update appointment:", error);
+//             toast.error("An error occurred while updating the appointment.");
+//         }
+//     };
+
+//     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+//         const { name, value } = e.target;
+//         setFormData((prev) => ({ ...prev, [name]: value }));
+//     };
+
+//     const handleCancel = async () => {
+//         if (!appointment) return;
+//         try {
+//             const response = await fetch(`/api/appointments/${appointment._id}`, {
+//                 method: 'DELETE',
+//             });
+
+//             const data = await response.json();
+
+//             if (!response.ok) {
+//                 console.error("Error canceling appointment:", data.message || "Unknown error");
+//                 toast.error(data.message || "Failed to cancel appointment.");
+//                 return;
+//             }
+
+//             setAppointment(null);
+//             toast.success("Appointment canceled successfully!");
+//         } catch (error) {
+//             console.error("Failed to cancel appointment:", error);
+//             toast.error("An error occurred while canceling the appointment.");
+//         }
+//     };
+//     return (
+//         <div className='bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-8 min-h-screen'>
+//             <div className='max-w-4xl mx-auto flex relative bg-gray-900 rounded-lg'>
+//                 <div className='w-1/2 p-4 pr-12'>
+//                     <div className='flex items-center mb-2'>
+//                         <Link href="/" className='text-blue-400 hover:text-blue-300 transition duration-300'>
+//                             Home
+//                         </Link>
+//                         <span className='text-gray-400 mx-2'>/</span>
+//                         <span className='text-gray-300'>Appointment</span>
+//                     </div>
+//                     <h2 className='text-4xl font-semibold text-white mb-4'>
+//                         DETAILS OF <span className='font-bold'>APPOINTMENT</span>
+//                     </h2>
+//                     {appointment ? (
+//                         <>
+//                             <p className='text-gray-400 mb-8'>
+//                                 Here are the details of your appointment. Please take a moment to verify the information and make sure everything is accurate. If there are any adjustments needed or questions you have, don't hesitate to reach out. We are here to assist you at every step.
+//                             </p>
+//                             <div className="text-sm font-medium px-3 py-1 rounded-full text-white mb-6">
+//                                 <span>Status:</span>
+//                                 <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment.status === 'completed' ? 'bg-blue-600' :
+//                                     appointment.status === 'confirmed' ? 'bg-green-600' :
+//                                         appointment.status === 'canceled' ? 'bg-red-600' :
+//                                             'bg-yellow-600'
+//                                     }`}>
+//                                     {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+//                                 </span>
+//                             </div>
+//                         </>
+//                     ) : (
+//                         <p className='text-gray-400 mb-8'>Loading appointment details...</p>
+//                     )}
+//                 </div>
+
+//                 {appointment && (
+//                     <div className='max-w-[30rem] bg-gray-800 rounded-lg shadow-xl p-6 absolute right-0 m-4'>
+//                         <h3 className="text-2xl font-semibold text-white mb-4 text-center">
+//                             Appointment Update
+//                         </h3>
+//                         <div className="grid grid-cols-2 gap-4">
+//                             <div>
+//                                 <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+//                                 <input
+//                                     type="text"
+//                                     name="name"
+//                                     value={formData.name || appointment.name}
+//                                     onChange={handleChange}
+//                                     className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+//                                 />
+//                             </div>
+//                             <div>
+//                                 <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+//                                 <input
+//                                     type="email"
+//                                     name="email"
+//                                     value={formData.email || appointment.email}
+//                                     onChange={handleChange}
+//                                     className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+//                                 />
+//                             </div>
+//                             <div>
+//                                 <label className="block text-sm font-medium text-gray-300 mb-1">Phone No.</label>
+//                                 <input
+//                                     type="text"
+//                                     name="phoneNo"
+//                                     value={formData.phoneNo || appointment.phoneNo}
+//                                     onChange={handleChange}
+//                                     className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+//                                 />
+//                             </div>
+//                             <div>
+//                                 <label className="block text-sm font-medium text-gray-300 mb-1">Date</label>
+//                                 <input
+//                                     type="date"
+//                                     name="date"
+//                                     value={formData.date || appointment.date}
+//                                     onChange={handleChange}
+//                                     className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+//                                 />
+//                             </div>
+//                             <div className="col-span-2">
+//                                 <label className="block text-sm font-medium text-gray-300 mb-1">Service</label>
+//                                 <input
+//                                     type="text"
+//                                     name="service"
+//                                     value={formData.service || appointment.service}
+//                                     onChange={handleChange}
+//                                     className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+//                                 />
+//                             </div>
+//                             <div className="col-span-2">
+//                                 <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+//                                 <textarea
+//                                     name="message"
+//                                     value={formData.message || appointment.message}
+//                                     onChange={handleChange}
+//                                     className="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 "
+//                                 />
+//                             </div>
+//                         </div>
+//                         <div className="mt-6 flex justify-between">
+//                             <button
+//                                 onClick={handleCancel}
+//                                 className="px-4 py-2 rounded  border border-red-500 text-red-500 shadow-lg hover:bg-red-500 hover:text-white transition duration-300">
+//                                 Cancel Booking
+//                             </button>
+//                             <button
+//                                 onClick={handleUpdateAppointment}
+//                                 className="px-4 py-2 rounded  border border-blue-500 text-blue-500 shadow-lg hover:bg-blue-500 hover:text-white transition duration-300">
+//                                 Update Appointment
+//                             </button>
+//                         </div>
+//                     </div>
+//                 )}
+//             </div>
+//         </div>
+//     );
+// }
+
+// export default AppointmentPage;
+

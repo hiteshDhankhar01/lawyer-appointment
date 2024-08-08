@@ -59,35 +59,6 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
     }
 };
 
-
-// export const GET = async (req: NextRequest, { params }: { params: { userId: string } }) => {
-//     await ConnectToDB();
-//     try {
-//         const { userId } = params;
-
-//         // Validate the user ID
-//         if (!mongoose.Types.ObjectId.isValid(userId)) {
-//             return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
-//         }
-
-//         // Find all future appointments for the user and sort by date ascending
-//         const futureAppointments = await Appointment.find({ userId: userId, date: { $gt: new Date() } })
-//             .sort({ date: 1 })
-//             .limit(1); // Only get the next upcoming appointment
-
-//         if (futureAppointments.length === 0) {
-//             return NextResponse.json({ success: false, message: 'No upcoming appointments found' }, { status: 404 });
-//         }
-
-//         return NextResponse.json({ success: true, data: futureAppointments[0] }, { status: 200 });
-//     } catch (err) {
-//         console.error(err);
-//         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
-//     }
-// };
-
-
-
 export const GET = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
     try {
@@ -101,7 +72,7 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
         // Find the next upcoming appointment for the user
         const currentDate = new Date();
         currentDate.setDate(currentDate.getDate() - 1);
-  
+
         console.log(currentDate.toString());
 
         const upcomingAppointment = await Appointment.findOne({
@@ -145,6 +116,31 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
         }
 
         return NextResponse.json({ success: true, data: updatedAppointment }, { status: 200 });
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
+    }
+};
+
+export const DELETE = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    await ConnectToDB();
+
+    const { userId } = params;
+    const appointmentId = userId
+    
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
+            return NextResponse.json({ success: false, message: 'Invalid appointment ID' }, { status: 400 });
+        }
+
+        const deletedAppointment = await Appointment.findByIdAndDelete(appointmentId);
+
+        if (!deletedAppointment) {
+            return NextResponse.json({ success: false, message: 'Appointment not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, message: 'Appointment deleted successfully' }, { status: 200 });
     } catch (err) {
         console.error(err);
         return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });

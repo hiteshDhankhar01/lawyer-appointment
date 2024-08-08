@@ -38,8 +38,8 @@ const Header: React.FC = () => {
                     <Link href="/#about">
                         <div className="hover:underline">About</div>
                     </Link>
-                    <Link href="/contact">
-                        <div className="hover:underline">Contact</div>
+                    <Link href="/#blog">
+                        <div className="hover:underline">Blog</div>
                     </Link>
                 </nav>
                 <div className='flex items-center'>
@@ -51,7 +51,7 @@ const Header: React.FC = () => {
                                 </span>
                                 {userName}
                             </button>
-                            <button onClick={handleLogout} className="px-4 py-2 rounded bg-red-600 border border-white text-white shadow-lg hover:bg-red-700 transition duration-300">
+                            <button onClick={handleLogout} className="px-4 py-2 rounded  border border-red-500 text-red-500 shadow-lg hover:bg-red-500 hover:text-white transition duration-300">
                                 Logout
                             </button>
                         </>
