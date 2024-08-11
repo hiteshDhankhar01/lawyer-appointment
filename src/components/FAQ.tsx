@@ -1,4 +1,5 @@
 "use client"
+import Image from 'next/image';
 import React, { useState } from 'react';
 
 const faqs = [
@@ -22,20 +23,32 @@ const FAQ: React.FC = () => {
                     {faqs.map((faq, index) => (
                         <div key={index} className={` bg-gray-800 p-4 rounded-lg custom-shadow ashadow-lg ui-accordion-header ${activeIndex === index ? 'ui-active' : ''}`}
                             onClick={() => toggleAccordion(index)}>
-                            <h3 className="text-lg">{faq.question}</h3>
-
+                            <div className="flex items-center justify-between cursor-pointer">
+                                <h3 className="text-lg">{faq.question}</h3>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className={`w-6 h-6 transform transition-transform duration-300 text-gray-500 ${activeIndex === index ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
                             <div className={`ui-accordion-body ${activeIndex === index ? 'block' : 'hidden'}`}>
                                 <p className="mt-2 text-gray-400">{faq.answer}</p>
                             </div>
                         </div>
                     ))}
                 </div>
+
             </div>
         </section>
     );
 };
 
 export default FAQ;
+
 
 // "use client"
 

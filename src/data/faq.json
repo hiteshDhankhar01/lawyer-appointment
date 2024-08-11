@@ -1,0 +1,30 @@
+[
+    {
+        "question": "What services do you offer?",
+        "answer": "We offer a wide range of legal services including family law, corporate law, and criminal law."
+    },
+    {
+        "question": "How can I schedule an appointment?",
+        "answer": "You can schedule an appointment by contacting us through our website or calling our office."
+    },
+    {
+        "question": "What are your office hours?",
+        "answer": "Our office hours are Monday to Friday, 9 AM to 5 PM."
+    },
+    {
+        "question": "Do you offer free consultations?",
+        "answer": "Yes, we offer a free initial consultation to discuss your legal needs and determine how we can assist you."
+    },
+    {
+        "question": "What types of cases do you handle?",
+        "answer": "We handle a variety of cases including personal injury, family disputes, criminal defense, and business matters."
+    },
+    {
+        "question": "How much do your services cost?",
+        "answer": "Our fees vary depending on the complexity of the case and the services required. We provide detailed pricing information during the initial consultation."
+    },
+    {
+        "question": "Can I contact you outside of office hours?",
+        "answer": "Yes, we are available for urgent matters outside of office hours. You can reach us via email or phone, and we will get back to you as soon as possible."
+    }
+]
