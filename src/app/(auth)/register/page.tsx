@@ -14,7 +14,7 @@ const Register: React.FC = () => {
         gender: ''
     });
     const router = useRouter();
-    const { state, dispatch } = useAuth();
+    const {dispatch } = useAuth();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };

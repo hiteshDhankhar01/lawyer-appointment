@@ -92,6 +92,36 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
     }
 };
 
+export const GET_ALL_EXCEPT_UPCOMING = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    await ConnectToDB();
+    try {
+        const { userId } = params;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
+        }
+
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 1);
+
+        const upcomingAppointment = await Appointment.findOne({
+            userId: userId,
+            date: { $gt: currentDate }
+        }).sort({ date: 1 });
+
+        const allAppointmentsExceptUpcoming = await Appointment.find({
+            userId: userId,
+            _id: { $ne: upcomingAppointment?._id } // Exclude the upcoming appointment
+        });
+
+        return NextResponse.json({ success: true, data: allAppointmentsExceptUpcoming }, { status: 200 });
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
+    }
+};
+
+
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     await ConnectToDB();
     const { userId } = params;

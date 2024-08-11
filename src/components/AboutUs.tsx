@@ -4,11 +4,11 @@ import AnimateValue from './ui/AnimateValue';
 
 const AboutUs: React.FC = () => {
     return (
-        <section className="abg-gray-900 text-white" id='about'>
-            <div className="container mx-auto">
+        <section className=" text-white text-center" id='about'>
+            <div className="max-w-4xl container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ">
                     <div className="flex items-center flex-col justify-between py-8 text-center md:text-left">
-                        <p className="text-lg mb-6 text-justify">
+                        <p className="text-lg mb-6 text-justify text-gray-400">
                             Welcome to our lawyer appointment app! We are dedicated to providing seamless experiences for clients seeking legal services. Our team of frontend developers is passionate about crafting intuitive web interfaces tailored to meet your needs.
                         </p>
 
