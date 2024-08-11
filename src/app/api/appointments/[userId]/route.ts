@@ -3,9 +3,11 @@ import { ConnectToDB } from '@/lib/mongoDB';
 import Appointment from '@/models/Appointment';
 import mongoose from 'mongoose';
 import User from '@/models/User';
-
+import { authMiddleware } from '@/lib/authMiddleware';
 
 export const POST = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    const authResponse = await authMiddleware(req);
+    if (authResponse) return authResponse;
     await ConnectToDB();
     try {
 

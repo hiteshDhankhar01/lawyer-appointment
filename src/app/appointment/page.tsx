@@ -19,6 +19,9 @@ const AppointmentPage = () => {
     const [appointment, setAppointment] = useState<IAppointment | null>(null);
     const [formData, setFormData] = useState<Partial<IAppointment>>({});
 
+    // 'Authorization': `Bearer ${state.token}`,
+    const userId2 = state.user._id
+
     useEffect(() => {
         if (state.user) {
             setUserId(state.user._id);
@@ -33,7 +36,7 @@ const AppointmentPage = () => {
 
     const fetchAppointment = async () => {
         try {
-            const response = await fetch(`/api/appointments/${userId}`);
+            const response = await fetch(`/api/appointments/${state.user._id}`);
             const data = await response.json();
 
             if (!response.ok) {
@@ -226,7 +229,7 @@ const AppointmentPage = () => {
                     </div>
                 )}
             </div>
-            < AppointmentsTable/>
+            < AppointmentsTable />
         </div>
     );
 }

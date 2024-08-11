@@ -4,7 +4,7 @@ import { createContext, useReducer, useContext, ReactNode } from "react";
 
 // Types from the previous step
 interface User {
-    id: string;
+    _id: string;
     name: string;
 }
 
