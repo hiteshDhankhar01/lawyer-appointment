@@ -7,8 +7,8 @@ import { toast } from 'react-toastify';
 import { useAuth } from "@/context/authContext"
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const router = useRouter();
     const { dispatch } = useAuth();
 
@@ -98,7 +98,7 @@ const Login: React.FC = () => {
                         </button>
                     </form>
                     <p className="text-center mt-6 text-gray-300">
-                        Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                         <Link href="/register" className="text-blue-500 border-b border-blue-500 transition duration-300">
                             Register here
                         </Link>

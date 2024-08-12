@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from '@/context/authContext';
-import { AppointmentType} from '@/models';
 import AppointmentCard from "./AppointmentCard";
+import { AppointmentType } from "@/lib/type";
 
 const Hero = () => {
   const { state } = useAuth();
