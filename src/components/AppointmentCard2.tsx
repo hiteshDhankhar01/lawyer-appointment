@@ -1,7 +1,7 @@
 import React from 'react';
-import { IAppointment } from '@/types';
+import { AppointmentType} from '@/types';
 
-const AppointmentCard2: React.FC<{ appointment: IAppointment }> = ({ appointment }) => {
+const AppointmentCard2: React.FC<{ appointment: AppointmentType}> = ({ appointment }) => {
     return (
         <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-950 text-white rounded-2xl p-6 shadow-lg transition duration-300 transform hover:scale-105 hover:shadow-2xl border-b border-gray-500">
             <div className="flex items-center mb-4">

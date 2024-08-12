@@ -1,17 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import { AppointmentType } from "@/lib/type";
 
-export interface IAppointment extends Document {
-    userId: mongoose.Schema.Types.ObjectId;
-    name: string;
-    email: string;
-    phoneNo: number;
-    date: Date;
-    service: string;
-    status: string;
-    message?: string;
-}
-
-const AppointmentSchema: Schema<IAppointment> = new Schema(
+const AppointmentSchema: Schema<AppointmentType> = new Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -50,8 +40,8 @@ const AppointmentSchema: Schema<IAppointment> = new Schema(
     { timestamps: true }
 );
 
-const Appointment: Model<IAppointment> =
+const Appointment: Model<AppointmentType> =
     mongoose.models.Appointment ||
-    mongoose.model<IAppointment>("Appointment", AppointmentSchema);
+    mongoose.model<AppointmentType>("Appointment", AppointmentSchema);
 
 export default Appointment;

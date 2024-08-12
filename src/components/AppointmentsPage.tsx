@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AppointmentCard from '@/components/AppointmentCard2';
-import { IAppointment } from '@/models/Appointment';
+import { AppointmentType } from "@/lib/type";
 
 const AppointmentsPage: React.FC = () => {
     const [appointments, setAppointments] = useState<IAppointment[]>([]);

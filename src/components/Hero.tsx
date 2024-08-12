@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from '@/context/authContext';
-import { IAppointment } from '@/models';
+import { AppointmentType} from '@/models';
 import AppointmentCard from "./AppointmentCard";
 
 const Hero = () => {
   const { state } = useAuth();
-  const [appointment, setAppointment] = useState<IAppointment | null>(null);
+  const [appointment, setAppointment] = useState<AppointmentType| null>(null);
   const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {

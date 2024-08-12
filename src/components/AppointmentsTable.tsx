@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/authContext';
-import { IAppointment } from '@/models/Appointment';
+import { AppointmentType } from "@/lib/type";
 
 const AppointmentsTable: React.FC = () => {
     const [appointments, setAppointments] = useState<IAppointment[]>([]);

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/authContext';
-import { IAppointment } from '@/models/Appointment';
+import { AppointmentType } from "@/lib/type";
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import AppointmentsTable from '@/components/AppointmentsTable';
@@ -16,7 +16,7 @@ const formatDate = (dateString: string) => {
 const AppointmentPage = () => {
     const { state } = useAuth();
     const [userId, setUserId] = useState<string>('');
-    const [appointment, setAppointment] = useState<IAppointment | null>(null);
+    const [appointment, setAppointment] = useState<AppointmentType| null>(null);
     const [formData, setFormData] = useState<Partial<IAppointment>>({});
 
     // 'Authorization': `Bearer ${state.token}`,

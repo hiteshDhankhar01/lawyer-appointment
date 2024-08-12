@@ -3,18 +3,19 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';f
 import { useAuth } from "@/context/authContext"
+import { RegisterFormDataType } from '@/lib/type';
 
 const Register: React.FC = () => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<RegisterFormDataType>({
         name: '',
         email: '',
         password: '',
         gender: ''
     });
     const router = useRouter();
-    const {dispatch } = useAuth();
+    const { dispatch } = useAuth();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };

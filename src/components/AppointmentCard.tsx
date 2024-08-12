@@ -1,8 +1,8 @@
 import React from 'react'
-import { IAppointment } from '@/models/Appointment'
+import { AppointmentType} from '@/models/Appointment'
 import Link from "next/link"
 
-const AppointmentCard: React.FC<{ appointment: IAppointment }> = ({ appointment }) => {
+const AppointmentCard: React.FC<{ appointment: AppointmentType}> = ({ appointment }) => {
 
     return (
         <div className="relative bg-gradient-to-r from-transparent px-10 via-gray-950 to-transparent text-white mt-10 p-4 shadow-lg">
