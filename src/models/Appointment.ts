@@ -16,13 +16,16 @@ const AppointmentSchema: Schema<AppointmentType> = new Schema(
             type: String,
             required: true,
         },
-        phoneNo: {
+        phone: {
             type: Number,
             required: true,
         },
-        date: {
+        appointmentDate:  {
             type: Date,
             required: true,
+        },
+        appointmentTime:  {
+            type: String,
         },
         service: {
             type: String,
@@ -30,10 +33,13 @@ const AppointmentSchema: Schema<AppointmentType> = new Schema(
         },
         status: {
             type: String,
-            enum: ["pending", "confirmed", "completed", "canceled"],
+            enum: ["pending", "scheduled", "completed", "canceled"],
             default: "pending",
         },
         message: {
+            type: String,
+        },
+        notes: {
             type: String,
         },
     },
