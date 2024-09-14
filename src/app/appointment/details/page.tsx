@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/authContext';
 import { AppointmentType } from "@/lib/type";
 import Link from 'next/link';
-import AppointmentsTable from '@/components/AppointmentsTable';
-import AppointmentForm from '@/components/AppointmentForm';
+import AppointmentsTable from '@/components/Appointment/AppointmentsTable';
+import UpdateAppointment from '@/components/Appointment/UpdateAppointment';
 
 export const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -14,20 +14,13 @@ export const formatDate = (dateString: string) => {
 
 const AppointmentPage = () => {
     const { state } = useAuth();
+    const userId = state.user?._id
     const [appointment, setAppointment] = useState<AppointmentType | null>(null);
-    const userId: string | null = state.user ? state.user._id : null;
-
-    useEffect(() => {
-        if (userId) {
-            fetchAppointment();
-        }
-    }, []);
-
-    const handleUpdateSuccess = () => {
-        fetchAppointment();
-    };
+    const [previousAppointments, setPreviousAppointments] = useState<AppointmentType[]>([]);
 
     const fetchAppointment = async () => {
+        if (!userId) return;
+
         try {
             const response = await fetch(`/api/appointments/${userId}`);
             const data = await response.json();
@@ -38,15 +31,27 @@ const AppointmentPage = () => {
             }
 
             const formattedAppointment = {
-                ...data.data,
-                date: formatDate(data.data.date),
+                ...data.upcomingAppointment,
             };
-
             setAppointment(formattedAppointment);
+            setPreviousAppointments(data.pastAppointments);
         } catch (error) {
             console.error("Failed to fetch appointment:", error);
         }
     };
+
+    useEffect(() => {
+        if (userId != undefined) {
+            fetchAppointment();
+        }
+    }, [userId]);
+
+    const handleUpdateSuccess = () => {
+        if (userId) {
+            fetchAppointment();
+        }
+    };
+
     return (
         <div className='bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-8 min-h-screen'>
             <div className='container mx-auto flex relative bg-gray-900 rounded-lg'>
@@ -68,12 +73,12 @@ const AppointmentPage = () => {
                             </p>
                             <div className="text-sm font-medium px-3 py-1 rounded-full text-white mb-6">
                                 <span>Status:</span>
-                                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment.status === 'completed' ? 'bg-blue-600' :
-                                    appointment.status === 'confirmed' ? 'bg-green-600' :
-                                        appointment.status === 'canceled' ? 'bg-red-600' :
+                                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment?.status === 'completed' ? 'bg-blue-600' :
+                                    appointment?.status === 'Scheduled' ? 'bg-green-600' :
+                                        appointment?.status === 'canceled' ? 'bg-red-600' :
                                             'bg-yellow-600'
                                     }`}>
-                                    {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                                    {appointment?.status ? appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) : 'Unknown'}
                                 </span>
                             </div>
                         </>
@@ -82,10 +87,12 @@ const AppointmentPage = () => {
                     )}
                 </div>
                 {appointment && (
-                    <AppointmentForm appointment={appointment} onUpdateSuccess={handleUpdateSuccess} />
+                    <UpdateAppointment appointment={appointment} onUpdateSuccess={handleUpdateSuccess} />
                 )}
             </div>
-            < AppointmentsTable />
+            {previousAppointments && (
+                <AppointmentsTable data={previousAppointments} />
+            )}
         </div>
     );
 }
