@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
     try {
 
         const body = await req.json();
-        const { name, email, phoneNo, date, service, status, message } = body;
+        const { name, email, appointmentDate, service, message } = body;
         const { userId } = params;
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -24,19 +24,13 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
         }
 
-        if (!name || !email || !phoneNo || !date || !service) {
+        if (!name || !email || !appointmentDate || !service) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
-        }
-
-        const appointmentDate = new Date(date);
-        const currentDate = new Date();
-        if (appointmentDate < currentDate) {
-            return NextResponse.json({ success: false, message: 'Appointment date cannot be in the past' }, { status: 400 });
         }
 
         const appointments = await Appointment.find({ userId: userId });
         if (appointments.length > 0) {
-            const futureAppointments = appointments.filter(app => new Date(app.date) > new Date());
+            const futureAppointments = appointments.filter(app => new Date(app.appointmentDate) > new Date());
             if (futureAppointments.length > 0) {
                 return NextResponse.json({ success: false, message: 'You already have an appointment booked for a future date' }, { status: 400 });
             }
@@ -46,10 +40,9 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
             userId,
             name,
             email,
-            phoneNo,
-            date: appointmentDate,
+            appointmentDate,
             service,
-            status,
+            status:"Pending",
             message,
         });
 
@@ -62,45 +55,14 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
 };
 
 export const GET = async (req: NextRequest, { params }: { params: { userId: string } }) => {
-    await ConnectToDB();
-    try {
-        const { userId } = params;
-
-        // Validate the user ID
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
-        }
-
-        // Find the next upcoming appointment for the user
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - 1);
-
-        console.log(currentDate.toString());
-
-        const upcomingAppointment = await Appointment.findOne({
-            userId: userId,
-            date: { $gt: currentDate }
-        })
-            .sort({ date: 1 }); // Sort by date to get the nearest upcoming appointment
-
-        if (!upcomingAppointment) {
-            return NextResponse.json({ success: false, message: 'No upcoming appointments found' }, { status: 404 });
-        }
-
-        return NextResponse.json({ success: true, data: upcomingAppointment }, { status: 200 });
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
-    }
-};
-
-export const GET_ALL_EXCEPT_UPCOMING = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    const authResponse = await authMiddleware(req);
+    if (authResponse) return authResponse;
     await ConnectToDB();
     try {
         const { userId } = params;
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid user ID" }, { status: 400 });
         }
 
         const currentDate = new Date();
@@ -108,30 +70,49 @@ export const GET_ALL_EXCEPT_UPCOMING = async (req: NextRequest, { params }: { pa
 
         const upcomingAppointment = await Appointment.findOne({
             userId: userId,
-            date: { $gt: currentDate }
-        }).sort({ date: 1 });
+            appointmentDate: { $gt: currentDate },
+        }).sort({ appointmentDate: 1 });
 
-        const allAppointmentsExceptUpcoming = await Appointment.find({
+        const pastAppointments = await Appointment.find({
             userId: userId,
-            _id: { $ne: upcomingAppointment?._id } // Exclude the upcoming appointment
-        });
+            appointmentDate: { $lt: currentDate },
+        }).sort({ appointmentDate: -1 });
 
-        return NextResponse.json({ success: true, data: allAppointmentsExceptUpcoming }, { status: 200 });
+        let responseMessage = {
+            success: true,
+            message: "",
+            upcomingAppointment: upcomingAppointment || null,
+            pastAppointments: pastAppointments || null,
+        };
+
+        if (!upcomingAppointment && !pastAppointments) {
+            responseMessage.message = "No appointments found.";
+        } else if (!upcomingAppointment) {
+            responseMessage.message = "No upcoming appointments found.";
+        } else if (!pastAppointments) {
+            responseMessage.message = "No past appointments found.";
+        } else {
+            responseMessage.message = "Appointments found.";
+        }
+        return NextResponse.json(responseMessage, { status: 200 });
     } catch (err) {
         console.error(err);
-        return NextResponse.json({ success: false, message: 'Server Error' }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server Error" }, { status: 500 });
     }
 };
+
 
 
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    const authResponse = await authMiddleware(req);
+    if (authResponse) return authResponse;
     await ConnectToDB();
     const { userId } = params;
     const appointmentId = userId
 
     try {
         const body = await req.json();
-        const { name, email, phoneNo, date, service, status, message } = body;
+        const { name, email, appointmentDate, service, status, message } = body;
 
         if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
             return NextResponse.json({ success: false, message: 'Invalid appointment ID' }, { status: 400 });
@@ -139,7 +120,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
 
         const updatedAppointment = await Appointment.findByIdAndUpdate(
             appointmentId,
-            { name, email, phoneNo, date, service, status, message },
+            { name, email, appointmentDate, service, status, message },
             { new: true, runValidators: true }
         );
 
@@ -155,11 +136,13 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
 };
 
 export const DELETE = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    const authResponse = await authMiddleware(req);
+    if (authResponse) return authResponse;
     await ConnectToDB();
 
     const { userId } = params;
     const appointmentId = userId
-    
+
 
     try {
         if (!mongoose.Types.ObjectId.isValid(appointmentId)) {

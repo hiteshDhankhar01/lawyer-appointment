@@ -3,16 +3,18 @@ import bcrypt from 'bcryptjs';
 import { ConnectToDB } from '@/lib/mongoDB';
 import User from '@/models/User';
 import jwt from 'jsonwebtoken';
+import mongoose, { Document } from 'mongoose';
 
-interface IUser {
-    _id: string;
+interface IUser extends Document {
+    _id: string | mongoose.Types.ObjectId;
     email: string;
     password: string;
     [key: string]: any;
 }
 
 const generateToken = (user: IUser): string => {
-    return jwt.sign({ id: user._id }, process.env.NEXT_PUBLIC_JWT_SECRET_KEY as string, {
+    const userId = user._id instanceof mongoose.Types.ObjectId ? user._id.toString() : user._id;
+    return jwt.sign({ id: userId }, process.env.NEXT_PUBLIC_JWT_SECRET_KEY as string, {
         expiresIn: '28d',
     });
 };
@@ -24,7 +26,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     if (action === 'login') {
         try {
-            const user: IUser | null = await User.findOne({ email });
+            const user = await User.findOne({ email }) as IUser;
 
             if (!user) {
                 return NextResponse.json({ message: 'User not found' }, { status: 400 });
@@ -46,7 +48,7 @@ export async function POST(req: Request): Promise<NextResponse> {
         }
     } else if (action === 'register') {
         try {
-            const user: IUser | null = await User.findOne({ email });
+            const user = await User.findOne({ email }) as IUser;
 
             if (user) {
                 return NextResponse.json({ message: 'User already exists' }, { status: 400 });
@@ -55,7 +57,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({ name, email, password: hashedPassword, gender });
             await newUser.save();
-            const token = generateToken(newUser);
+            const token = generateToken(newUser as IUser);
 
             return NextResponse.json({ message: 'User registered successfully!', newUser, token }, { status: 201 });
         } catch (error) {

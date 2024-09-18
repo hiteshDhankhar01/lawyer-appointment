@@ -15,6 +15,7 @@ export const formatDate = (dateString: string) => {
 const AppointmentPage = () => {
     const { state } = useAuth();
     const userId = state.user?._id
+    const token = state.token
     const [appointment, setAppointment] = useState<AppointmentType | null>(null);
     const [previousAppointments, setPreviousAppointments] = useState<AppointmentType[]>([]);
 
@@ -22,7 +23,13 @@ const AppointmentPage = () => {
         if (!userId) return;
 
         try {
-            const response = await fetch(`/api/appointments/${userId}`);
+            const response = await fetch(`/api/appointments/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await response.json();
 
             if (!response.ok) {
@@ -73,9 +80,9 @@ const AppointmentPage = () => {
                             </p>
                             <div className="text-sm font-medium px-3 py-1 rounded-full text-white mb-6">
                                 <span>Status:</span>
-                                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment?.status === 'completed' ? 'bg-blue-600' :
-                                    appointment?.status === 'Scheduled' ? 'bg-green-600' :
-                                        appointment?.status === 'canceled' ? 'bg-red-600' :
+                                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment?.status === 'Complete' ? 'bg-blue-600' :
+                                    appointment?.status === 'Schedule' ? 'bg-green-600' :
+                                        appointment?.status === 'Cancel' ? 'bg-red-600' :
                                             'bg-yellow-600'
                                     }`}>
                                     {appointment?.status ? appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) : 'Unknown'}
