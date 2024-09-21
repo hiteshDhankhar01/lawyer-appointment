@@ -19,10 +19,7 @@ const AppointmentCard: React.FC<AppointmentProps> = ({ appointment }) => {
             </p>
             <p className="mb-2 text-lg">
                 Status:
-                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm
-              ${appointment.status === 'complete' ? 'bg-blue-500' :
-                        appointment.status === 'Schedule' ? 'bg-green-500' :
-                            appointment.status === 'cancele' ? 'bg-red-500' : 'bg-yellow-500'}`}>
+                <span className={`inline-block ml-2 px-3 py-1 rounded-full text-sm ${appointment?.status === 'Complete' ? 'bg-blue-600' : appointment?.status === 'Schedule' ? 'bg-green-600' : appointment?.status === 'Cancel' ? 'bg-red-600' : 'bg-yellow-600'}`}>
                     {appointment.status}
                 </span>
             </p>

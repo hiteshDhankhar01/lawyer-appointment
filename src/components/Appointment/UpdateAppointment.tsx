@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from '@/context/authContext';
 import { AppointmentType } from '@/lib/type';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -11,6 +12,8 @@ interface AppointmentFormProps {
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onUpdateSuccess }) => {
+    const { state } = useAuth();
+    const token = state.token
     const [formData, setFormData] = useState<Partial<AppointmentType>>({});
     const router = useRouter();
 
@@ -18,7 +21,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onUpdate
         const formatAppointmentDate = new Date(appointment.appointmentDate)
             .toISOString()
             .slice(0, 16);
-    
+
         setFormData({
             _id: appointment._id,
             name: appointment.name,
@@ -28,9 +31,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onUpdate
             message: appointment.message,
         });
     }, [appointment]);
-    
 
-    // Handle form submission for updating an appointment
+
     const handleUpdateAppointment = async () => {
         if (!formData._id) return;
 
@@ -39,6 +41,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onUpdate
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });
@@ -58,19 +61,21 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onUpdate
         }
     };
 
-    // Handle form input changes, updating form data state
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle appointment cancellation
     const handleCancel = async () => {
         if (!formData._id) return;
 
         try {
             const response = await fetch(`/api/appointments/${formData._id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             const data = await response.json();

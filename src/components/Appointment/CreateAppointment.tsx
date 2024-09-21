@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/context/authContext';
+import servicesData from '@/data/services.json';
 
 const CreateAppointment: React.FC = () => {
     const { state } = useAuth();
     const userId = state.user?._id
+    const token = state.token
     const [formData, setFormData] = useState({
         name: state.user?.name,
         email: state.user?.email,
@@ -27,27 +29,35 @@ const CreateAppointment: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (new Date(formData.appointmentDate) < new Date()) {
+            toast.error('Appointment date cannot be in the past.');
+            return;
+        }
+    
         try {
             const response = await fetch(`/api/appointments/${userId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ ...formData })
             });
-
+    
             const data = await response.json();
+    
             if (response.ok) {
                 toast.success('Appointment booked successfully!');
                 router.push('/');
             } else {
-                toast.error(data.message);
+                toast.error(data.message || 'Failed to book appointment.');
             }
         } catch (error) {
             console.error(error);
-            toast.error('An error occurred while booking the appointment.');
+            toast.error('Internal error');
         }
     };
+    
 
     return (
         <div className="relative min-h-screen text-white bg-cover bg-center overflow-scroll" style={{ backgroundImage: 'url(/bg.jpg)' }}>
@@ -105,11 +115,12 @@ const CreateAppointment: React.FC = () => {
                                         onChange={handleChange}
                                         required
                                     >
-                                        <option value="">Select Service</option>
-                                        <option value="family-law">Family Law</option>
-                                        <option value="criminal-defense">Criminal Defense</option>
-                                        <option value="estate-planning">Estate Planning</option>
-                                        <option value="corporate-law">Corporate Law</option>
+                                        <option className='bg-gray-900' value="">Select Service</option>
+                                        {servicesData.map((service,index)=>(
+                                            <option  className='bg-gray-900' key={index} value={service.title}>{service.title}</option>
+                                        ))}
+                                        
+                                        <option className='bg-gray-900' value="other">Other</option>
                                     </select>
                                 </div>
                             </div>

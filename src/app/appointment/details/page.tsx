@@ -20,7 +20,7 @@ const AppointmentPage = () => {
     const [previousAppointments, setPreviousAppointments] = useState<AppointmentType[]>([]);
 
     const fetchAppointment = async () => {
-        if (!userId) return;
+        if (!userId || !token) return;
 
         try {
             const response = await fetch(`/api/appointments/${userId}`, {
@@ -48,10 +48,15 @@ const AppointmentPage = () => {
     };
 
     useEffect(() => {
-        if (userId != undefined) {
+        if (userId && token) {
             fetchAppointment();
+            const intervalId = setInterval(() => {
+                fetchAppointment();
+            }, 5 * 60 * 1000);
+            return () => clearInterval(intervalId);
         }
-    }, [userId]);
+    }, [userId, token]);
+    
 
     const handleUpdateSuccess = () => {
         if (userId) {
