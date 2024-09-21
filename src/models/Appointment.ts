@@ -1,12 +1,24 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
-import { AppointmentType } from "@/lib/type";
 
+// Correcting the interface
+interface AppointmentType extends Document {
+    userId: mongoose.Schema.Types.ObjectId;
+    name: string;
+    email: string;
+    appointmentDate: Date;
+    service: string;
+    status?: string;
+    message?: string;
+    notes?: string;
+}
+
+// Corrected Schema
 const AppointmentSchema: Schema<AppointmentType> = new Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            required: true,
         },
         name: {
             type: String,
@@ -16,16 +28,9 @@ const AppointmentSchema: Schema<AppointmentType> = new Schema(
             type: String,
             required: true,
         },
-        phone: {
-            type: Number,
-            required: true,
-        },
-        appointmentDate:  {
+        appointmentDate: {
             type: Date,
             required: true,
-        },
-        appointmentTime:  {
-            type: String,
         },
         service: {
             type: String,
@@ -33,8 +38,7 @@ const AppointmentSchema: Schema<AppointmentType> = new Schema(
         },
         status: {
             type: String,
-            enum: ["pending", "scheduled", "completed", "canceled"],
-            default: "pending",
+            default: "Pending",
         },
         message: {
             type: String,

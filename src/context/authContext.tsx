@@ -1,15 +1,10 @@
 "use client";
 
-import { createContext, useReducer, useContext, ReactNode } from "react";
-
-// Types from the previous step
-interface User {
-    _id: string;
-    name: string;
-}
+import { UserType } from "@/lib/type";
+import { createContext, useReducer, useContext, ReactNode, useEffect, useState } from "react";
 
 interface AuthState {
-    user: User | null;
+    user: UserType | null;
     token: string | null;
 }
 
@@ -18,14 +13,14 @@ type AuthActionType = 'LOGIN_START' | 'LOGIN_SUCCESS' | 'LOGOUT';
 interface AuthAction {
     type: AuthActionType;
     payload?: {
-        user?: User;
-        token?: string;
+        user?: UserType;
+        token?: string | null;
     };
 }
 
 const initialState: AuthState = {
-    user: typeof window !== "undefined" && localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null,
-    token: typeof window !== "undefined" ? localStorage.getItem('token') : null,
+    user: null,
+    token: null,
 };
 
 const AuthContext = createContext<{ state: AuthState; dispatch: React.Dispatch<AuthAction> } | undefined>(undefined);
@@ -54,6 +49,28 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const storedToken = localStorage.getItem('token');
+
+        if (storedUser) {
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: {
+                    user: JSON.parse(storedUser),
+                    token: storedToken,
+                },
+            });
+        }
+
+        setIsHydrated(true);
+    }, []);
+
+    if (!isHydrated) {
+        return null;
+    }
 
     return (
         <AuthContext.Provider value={{ state, dispatch }}>

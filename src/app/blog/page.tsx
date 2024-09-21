@@ -82,29 +82,3 @@ const BlogPage = () => {
 }
 
 export default BlogPage;
-
-
-// const BlogPage = async () => {
-//     try {
-//         const response = await fetch('http://localhost:3000/api/blog', {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//         });
-
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-
-//         const data = await response.json();
-//         console.log(data);
-
-//         return (
-//                 <Blog blogs={data.blogs} />
-//         );
-//     } catch (error) {
-//         console.error('Failed to fetch blogs:', error);
-//         return <div>Error loading blog posts</div>;
-//     }
-// };

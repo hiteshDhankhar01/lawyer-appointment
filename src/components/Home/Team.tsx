@@ -2,25 +2,21 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { teamMemberType } from '@/lib/type';
 
-const teamMembers = [
-    { name: 'John Doe', role: 'Senior Lawyer', image: 'https://via.placeholder.com/150' },
-    { name: 'Jane Smith', role: 'Associate Lawyer', image: 'https://via.placeholder.com/150' },
-    { name: 'Samuel Green', role: 'Paralegal', image: 'https://via.placeholder.com/150' },
-    { name: 'John Doe', role: 'Senior Lawyer', image: 'https://via.placeholder.com/150' },
-    { name: 'Jane Smith', role: 'Associate Lawyer', image: 'https://via.placeholder.com/150' },
-    { name: 'Samuel Green', role: 'Paralegal', image: 'https://via.placeholder.com/150' },
-    { name: 'Jane Smith', role: 'Associate Lawyer', image: 'https://via.placeholder.com/150' },
-    { name: 'Samuel Green', role: 'Paralegal', image: 'https://via.placeholder.com/150' },
-];
 
-const Team = () => {
+interface teamPropsType {
+    team: teamMemberType[];
+}
+
+
+const Team:React.FC<teamPropsType> = ({team}) => {
     return (
         <section className="text-white px-4 py-12">
             <div className="container mx-auto">
                 <h2 className="text-4xl font-bold mb-8 text-center">Meet Our Team</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {teamMembers.map((member, index) => (
+                    {team.map((member, index) => (
                         <div 
                             key={index} 
                             className="relative bg-gray-800 border border-gray-700 shadow-lg flex flex-col justify-center items-center p-6 rounded-xl transition-transform duration-300 hover:scale-105 transform hover:bg-gray-700"
@@ -29,9 +25,10 @@ const Team = () => {
                             <div className="w-full flex justify-center items-center mb-4">
                                 <div className="relative w-24 h-24">
                                     <Image
-                                        src="https://img.freepik.com/premium-photo/young-indian-girl-as-lawyer-court-room_437792-171.jpg"
-                                        alt={member.name}
-                                        fill
+                                        src={member.image}
+                                        alt={member.image}
+                                        width={200}
+                                        height={200}
                                         className="rounded-full object-cover"
                                     />
                                 </div>

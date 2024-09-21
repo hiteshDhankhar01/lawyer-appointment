@@ -1,13 +1,16 @@
 import { BlogType } from '@/lib/type'
-import { Link } from 'lucide-react'
+import Link from 'next/link'; 
 import Image from 'next/image'
 import React from 'react'
 
 interface BlogDetailsPropsType {
-    blog: BlogType;
+    blog?: BlogType; 
 }
 
-const BlogDetails:React.FC<BlogDetailsPropsType> = ({blog}) => {
+const BlogDetails: React.FC<BlogDetailsPropsType> = ({ blog }) => {
+    if (!blog) {
+        return <p>Blog not found</p>; 
+    }
     return (
         <div>
             <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 min-h-screen py-6">
@@ -26,7 +29,7 @@ const BlogDetails:React.FC<BlogDetailsPropsType> = ({blog}) => {
 
                     <div className="relative h-80 rounded-lg overflow-hidden">
                         <Image
-                            src={blog.image || 'https:utfs.io/f/corporate-law-image.jpg'}
+                            src={blog.image || '/default-image.jpg'}
                             alt={blog.title}
                             fill
                             className="object-cover rounded-lg"
@@ -36,7 +39,7 @@ const BlogDetails:React.FC<BlogDetailsPropsType> = ({blog}) => {
 
                     <h1 className="text-4xl font-bold mt-4">{blog.title}</h1>
                     <p className="text-gray-400 mt-2">{blog.excerpt}</p>
-                    <div className="mt-6 text-gray-200">
+                    <div className="mt-6 text-gray-200 text-justify">
                         {blog.paragraph}
                     </div>
                 </div>
@@ -45,4 +48,4 @@ const BlogDetails:React.FC<BlogDetailsPropsType> = ({blog}) => {
     )
 }
 
-export default BlogDetails;
+export default BlogDetails

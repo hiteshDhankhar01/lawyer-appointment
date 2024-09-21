@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import AnimateValue from './ui/AnimateValue';
+import AnimateValue from '../ui/AnimateValue';
 
 const AboutUs: React.FC = () => {
     return (

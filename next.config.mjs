@@ -1,15 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['img.freepik.com'],
+        domains: ['utfs.io'],
     },
 };
 
 export default nextConfig;
-
-
-
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {};
-
-// 
