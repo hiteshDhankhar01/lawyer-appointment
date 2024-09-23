@@ -9,6 +9,7 @@ interface AppointmentsTablePropsType {
 
 const AppointmentsTable: React.FC<AppointmentsTablePropsType> = ({ data }) => {
     const appointments = data;
+    console.log(appointments) 
 
     return (
         <div className="overflow-x-auto mt-[15rem] container mx-auto">

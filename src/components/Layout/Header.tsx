@@ -22,8 +22,8 @@ const Header: React.FC = () => {
     
 
     return (
-        <header className="bg-gray-900 text-white border-b border-gray-800">
-        <div className="container mx-auto flex justify-between items-center py-4">
+        <header className="bg-gray-900 text-white border-b border-gray-800 sticky top-0 z-20">
+        <div className="container mx-auto flex justify-between items-center py-4 ">
             <div className="text-2xl font-bold">
                 <Link href="/">
                     <h1>LawyerMeet</h1>

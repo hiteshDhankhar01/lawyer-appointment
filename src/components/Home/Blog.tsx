@@ -15,7 +15,7 @@ const Blog = () => {
     useEffect(() => {
         const fetchAllBlogs = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/blog', {
+                const response = await fetch('/api/blog', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,19 +37,13 @@ const Blog = () => {
     }, [])
 
     return loading ? (
-        <div className="flex justify-center items-center h-full">
-            {/* Ascending Loader */}
-            <div className="space-y-2">
-                <div className="loader-bar h-2 w-8 bg-gray-300 rounded-full animate-ascend"></div>
-                <div className="loader-bar h-2 w-8 bg-gray-300 rounded-full animate-ascend delay-150"></div>
-                <div className="loader-bar h-2 w-8 bg-gray-300 rounded-full animate-ascend delay-300"></div>
-            </div>
+        <div>
+            
         </div>
     ) : (
         <div className='text-white' id='blog'>
             <h2 className="text-3xl font-extrabold mb-6 text-center neon-text">Latest Blog Posts</h2>
             <div className="flex flex-col md:flex-row gap-8 p-6">
-                {/* Left Side: Swiper Slider */}
                 <div className="w-full md:w-2/3 relative">
                     <Swiper
                         spaceBetween={30}
@@ -59,13 +53,13 @@ const Blog = () => {
                         {blogs.map((blog, index) => (
                             <SwiperSlide key={index}>
                                 <div
-                                    className="relative min-h-[35rem] p-6 rounded-lg overflow-hidden shadow-lg flex items-center justify-center bg-gradient-to-r from-gray-800 via-gray-900 to-black" style={{ backgroundImage: `url(${blog.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                                    className="relative min-h-[35rem] p-6 rounded-lg overflow-hidden shadow-lg flex items-center justify-center bg-gradient-to-r from-gray-800 via-gray-900 to-black" style={{ backgroundImage: 'url(/bg.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-100"></div>
                                     <div className="relative z-10 text-center">
                                         <h3 className="text-3xl font-bold text-white mb-4">{blog.title}</h3>
                                         <p className="text-gray-300 text-sm mb-6">{blog.excerpt}</p>
-                                        <Link href={`/blog/${blog._id}`} className='inline-block py-2 px-6 rounded-full  hover:shadow-xl border border-gray-100 text-gray-100 shadow-lg hover:bg-gray-100 hover:text-black  transition duration-300 backdrop-blur-lg'>
+                                        <Link href={`/blog/${blog._id}`} className='inline-block py-2 px-6 rounded-full  hover:shadow-xl border border-gray-100 text-gray-100 shadow-lg hover:bg-gray-100 hover:text-black transition duration-300  backdrop-blur-lg'>
                                             Read More
                                         </Link>
                                     </div>
@@ -74,8 +68,6 @@ const Blog = () => {
                         ))}
                     </Swiper>
                 </div>
-
-                {/* Right Side: Blog Cards */}
                 <div className="w-full md:w-1/3 flex flex-col my-auto gap-3">
                     {blogs.slice(0, 3).map((blog) => (
                         <div key={blog._id} className="relative flex bg-gray-900 rounded-lg shadow-lg min-h-40 ">
@@ -102,11 +94,8 @@ const Blog = () => {
                         </div>
                     ))}
                     <Link href='/blog' className='text-blue-400  texwt-gray-400 mx-2 text-md text-right mt-2 hover:text-blue-600'>View More Blogs</Link>
-
                 </div>
-
             </div >
-
         </div>
     );
 };

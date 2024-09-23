@@ -7,11 +7,6 @@
 
   <h2>LawyerMeet</h2>
   <h3>A Full Stack Lawyer Appointment Application</h3>
-
-  <p>
-    Build this project step by step with our detailed tutorial on 
-    <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><strong>JavaScript Mastery</strong></a> YouTube. Join the JSM family!
-  </p>
 </div>
 
 # LawyerMeet - Lawyer Appointment Application
@@ -55,7 +50,6 @@ Follow these steps to set up the project locally:
 3. **Set up environment variables**:
    Create a `.env.local` file in the root directory and add the following environment variables:
    ```
-   MONGODB_URI=<your-mongodb-uri>
    NEXT_PUBLIC_MONGODB_URI=<your-mongodb-uri>
    NEXT_PUBLIC_JWT_SECRET_KEY=<your-jwt-secret-key>
    ```

@@ -102,8 +102,10 @@ const AppointmentPage = () => {
                     <UpdateAppointment appointment={appointment} onUpdateSuccess={handleUpdateSuccess} />
                 )}
             </div>
-            {previousAppointments && (
+            {previousAppointments.length > 0 ? (
                 <AppointmentsTable data={previousAppointments} />
+            ) : (
+                <p className='text-gray-300 text-sm text-center mt-[15rem]'>No past appointments</p>
             )}
         </div>
     );

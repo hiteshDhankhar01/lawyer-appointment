@@ -12,7 +12,7 @@ const BlogPage = () => {
     useEffect(() => {
         const fetchAllBlogs = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/blog', {
+                const response = await fetch('/api/blog', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

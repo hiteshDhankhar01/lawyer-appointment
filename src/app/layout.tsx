@@ -30,7 +30,7 @@ export default function RootLayout({
             transition={Slide}
           />
           <div className="flex flex-col justify-between min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 ">
-            <Header />
+            <Header/>
             <main>
               {children}
             </main>
