@@ -3,7 +3,7 @@ import { updateAppointmentStatuses } from './updateAppointmentStatuses';
 
 export const ConnectToDB = async (): Promise<void> => {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/LawyerMeet');
+        await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI || "", { dbName: 'LawyerMeet' })
         console.log(`mongoose is connected with ${mongoose.connection.host}`);
         await updateAppointmentStatuses();
     } catch (error) {
