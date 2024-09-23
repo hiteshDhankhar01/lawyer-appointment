@@ -53,7 +53,7 @@ const Blog = () => {
                         {blogs.map((blog, index) => (
                             <SwiperSlide key={index}>
                                 <div
-                                    className="relative min-h-[35rem] p-6 rounded-lg overflow-hidden shadow-lg flex items-center justify-center bg-gradient-to-r from-gray-800 via-gray-900 to-black" style={{ backgroundImage: 'url(/bg.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+                                    className="relative min-h-[35rem] p-6 rounded-lg overflow-hidden shadow-lg flex items-center justify-center bg-gradient-to-r from-gray-800 via-gray-900 to-black" style={{ backgroundImage: `url(${blog.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-100"></div>
                                     <div className="relative z-10 text-center">
