@@ -7,15 +7,15 @@ import Link from 'next/link';
 import AppointmentsTable from '@/components/Appointment/AppointmentsTable';
 import UpdateAppointment from '@/components/Appointment/UpdateAppointment';
 
-export const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-};
-
 const AppointmentPage = () => {
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+    };
+
     const { state } = useAuth();
-    const userId = state.user?._id
-    const token = state.token
+    const userId = state.user?._id;
+    const token = state.token;
     const [appointment, setAppointment] = useState<AppointmentType | null>(null);
     const [previousAppointments, setPreviousAppointments] = useState<AppointmentType[]>([]);
 
@@ -56,7 +56,6 @@ const AppointmentPage = () => {
             return () => clearInterval(intervalId);
         }
     }, [userId, token]);
-    
 
     const handleUpdateSuccess = () => {
         if (userId) {
@@ -75,7 +74,7 @@ const AppointmentPage = () => {
                         <span className='text-gray-400 mx-2'>/</span>
                         <span className='text-gray-300'>Appointment</span>
                     </div>
-                    <h2 className='text-4xl  text-white mb-4'>
+                    <h2 className='text-4xl text-white mb-4'>
                         DETAILS OF <span>APPOINTMENT</span>
                     </h2>
                     {appointment ? (
@@ -109,6 +108,6 @@ const AppointmentPage = () => {
             )}
         </div>
     );
-}
+};
 
 export default AppointmentPage;
