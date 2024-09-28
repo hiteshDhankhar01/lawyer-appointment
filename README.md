@@ -1,8 +1,9 @@
 <div align="center">
   <br />
-  <a href="" target="https://hvisual.vercel.app/#LaywerMeet">
-    <img src="https://raw.githubusercontent.com/hiteshDhankhar01/Portfolio/refs/heads/main/src/assets/projects/LawyerMeet_01.png" alt="Project Banner">
-  </a>
+ <a href="https://hvisual.vercel.app/#LaywerMeet" target="_blank">
+    <img src="https://raw.githubusercontent.com/hiteshDhankhar01/Portfolio/refs/heads/main/src/assets/projects/LawyerMeet_01.png" alt="Project Banner" style="height: 200px; width: auto;">
+</a>
+
   <br />
 
   <h2>LawyerMeet</h2>
